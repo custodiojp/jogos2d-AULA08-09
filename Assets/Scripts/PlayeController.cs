@@ -31,7 +31,7 @@ public class PlatformController : MonoBehaviour
     private PlayerActionMap inputActions;
     private InputAction moveAction;
     private InputAction jumpAction;
-    
+    private InputAction HitAction;
     // Movement state
     private Vector2 moveInput;
     private bool isJumping;
@@ -50,6 +50,7 @@ public class PlatformController : MonoBehaviour
 
         moveAction = inputActions.Player.Move;
         jumpAction = inputActions.Player.Jump;
+        HitAction = inputActions.Player.Hit;
     }
     
     private void OnEnable()
@@ -57,10 +58,13 @@ public class PlatformController : MonoBehaviour
         // Enable input actions
         moveAction.Enable();
         jumpAction.Enable();
+        HitAction.Enable();
         
+
         // Subscribe to input events
         jumpAction.performed += OnJumpPerformed;
         jumpAction.canceled += OnJumpCanceled;
+        HitAction.performed += OnHit;
     }
     
     private void OnDisable()
@@ -68,12 +72,18 @@ public class PlatformController : MonoBehaviour
         // Unsubscribe from input events
         jumpAction.performed -= OnJumpPerformed;
         jumpAction.canceled -= OnJumpCanceled;
+        HitAction.performed -= OnHit;
         
+
         // Disable input actions
         moveAction.Disable();
         jumpAction.Disable();
+        HitAction.Disable();
     }
-    
+    private void OnHit(InputAction.CallbackContext context)
+    {
+        Anim.SetTrigger("Attack");
+    }
     private void Update()
     {
         // Read movement input from YOUR configured Move action
